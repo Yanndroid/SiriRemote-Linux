@@ -7,6 +7,23 @@ python program connects to and intercepts the data from a SiriRemote over blueto
 like change the volume or control media. Even the touchpad is working and if you know a bit of python, you can basically
 do anything with it.
 
+* [SiriRemote-Linux](#siriremote-linux)
+    * [Usage](#usage)
+        * [Preparations (only once)](#preparations-only-once)
+        * [Media control](#media-control)
+        * [Custom](#custom)
+* [Internal working of the SiriRemote](#internal-working-of-the-siriremote)
+    * [GATT Layout](#gatt-layout)
+    * [Battery information](#battery-information)
+        * [Battery level](#battery-level)
+        * [Charging state](#charging-state)
+    * [Enable input](#enable-input)
+        * [Buttons](#buttons)
+        * [Touch](#touch)
+            * [X coordinate](#x-coordinate)
+            * [Y coordinate](#y-coordinate)
+        * [Audio/Siri](#audiosiri)
+
 ## Usage
 
 ### Preparations (only once)
