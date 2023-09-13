@@ -189,7 +189,7 @@ gives us the location in such a "zone". The byte at index 7 gives us the remaini
 
 #### Y coordinate
 
-The Y coordinate is pretty strait forward. The value (bottom to top) goes from 188 to 255 and then from 0 to 38. I
+The Y coordinate is pretty straight forward. The value (bottom to top) goes from 188 to 255 and then from 0 to 38. I
 assume it's a signed bytes which would explain this behaviour.
 
 The resolution is pretty low compared to the X coordinate, so there might be something else that contributes to the Y
