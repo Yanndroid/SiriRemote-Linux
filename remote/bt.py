@@ -12,6 +12,14 @@ class Device(DefaultDelegate):
         self.__peripheral = Peripheral(self.mac)
         self.__peripheral.withDelegate(self)
 
+        # TODO: testing
+        for svc in self.__peripheral.services:
+            print(str(svc), svc.uuid)
+            for ch in svc.getCharacteristics():
+                print(" ", str(ch), ch.uuid, hex(ch.handle), hex(ch.valHandle))
+                for desc in ch.getDescriptors():
+                    print("   ", str(desc), desc.uuid, hex(desc.handle))
+
     def loop(self):
         while True:
             self.__peripheral.waitForNotifications(0)
@@ -29,5 +37,7 @@ class Device(DefaultDelegate):
         self.__peripheral.setMTU(value)
 
     def handleNotification(self, handle, data):
+        print(hex(handle), data.hex())  # TODO: testing
+
         if self.__listener:
             self.__listener(handle, data)

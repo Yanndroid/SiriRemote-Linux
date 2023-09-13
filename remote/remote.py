@@ -49,10 +49,15 @@ class SiriRemote:
             self.__device.connect()
             self.__device.set_mtu(104)
             self.__device.set_listener(self.__handle_notification)
-            self.__device.enable_notifications(0x0029)  # battery service
-            self.__device.enable_notifications(0x002c)  # power service
-            self.__device.enable_notifications(0x0024)  # hid service
-            self.__device.write_characteristic(0x001d, b'\xAF')  # "magic" byte
+            self.__device.enable_notifications(0x002f)  # battery service
+            self.__device.enable_notifications(0x0032)  # power service
+            self.__device.enable_notifications(0x0036)  # hid service
+            self.__device.enable_notifications(0x003a)  # hid service
+            self.__device.enable_notifications(0x003e)  # hid service
+            self.__device.enable_notifications(0x0042)  # hid service
+            self.__device.enable_notifications(0x0046)  # hid service
+            self.__device.enable_notifications(0x004a)  # hid service
+            self.__device.write_characteristic(0x004d, b'\xF0\x00')  # "magic" byte
             self.__device.loop()
         except BTLEDisconnectError:
             self.__listener.event_button(0)  # release all keys
