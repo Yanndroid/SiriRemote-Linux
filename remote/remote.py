@@ -13,29 +13,35 @@ class RemoteListener:
     def event_button(self, button: int):
         pass
 
-    def event_touchpad(self, data, pressed: bool):
+    def event_touchpad(self, data):
         pass
 
 
 class SiriRemote:
-    __HANDLE_INPUT = 35
-    __HANDLE_BATTERY = 40
-    __HANDLE_POWER = 43
-    __TOUCH_EVENT = 50
+    __HANDLE_INPUT = 57
+    __HANDLE_TOUCH = 61
+    # __HANDLE_AUDIO = 53
+    __HANDLE_BATTERY = 46
+    __HANDLE_POWER = 49
 
     __POWER_CHARGING = 171
     __POWER_DISCHARGING = 175
     __POWER_PLUGGED_IN = 187
 
     BUTTON_RELEASED = 0
-    BUTTON_AIRPLAY = 1
+    BUTTON_HOME = 1
     BUTTON_VOLUME_UP = 2
     BUTTON_VOLUME_DOWN = 4
-    BUTTON_PLAY_PAUSE = 8
-    BUTTON_SIRI = 16
-    BUTTON_MENU = 32
-    BUTTON_TOUCHPAD_2 = 64  # custom: 2 finger click
-    BUTTON_TOUCHPAD = 128
+    BUTTON_TOUCHPAD = 8
+    BUTTON_POWER = 16
+    BUTTON_SIRI = 32
+    BUTTON_BACK = 64
+    BUTTON_MUTE = 128
+    BUTTON_PLAY_PAUSE = 256
+    BUTTON_UP = 512
+    BUTTON_RIGHT = 1024
+    BUTTON_DOWN = 2048
+    BUTTON_LEFT = 4096
 
     __lastButton = 0
 
@@ -47,16 +53,13 @@ class SiriRemote:
     def __setup(self):
         try:
             self.__device.connect()
-            self.__device.set_mtu(104)
+            self.__device.set_mtu(247)
             self.__device.set_listener(self.__handle_notification)
             self.__device.enable_notifications(0x002f)  # battery service
             self.__device.enable_notifications(0x0032)  # power service
-            self.__device.enable_notifications(0x0036)  # hid service
-            self.__device.enable_notifications(0x003a)  # hid service
-            self.__device.enable_notifications(0x003e)  # hid service
-            self.__device.enable_notifications(0x0042)  # hid service
-            self.__device.enable_notifications(0x0046)  # hid service
-            self.__device.enable_notifications(0x004a)  # hid service
+            self.__device.enable_notifications(0x003a)  # hid service | buttons
+            self.__device.enable_notifications(0x0036)  # hid service | touch
+            # self.__device.enable_notifications(0x003e)  # hid service | audio
             self.__device.write_characteristic(0x004d, b'\xF0\x00')  # "magic" byte
             self.__device.loop()
         except BTLEDisconnectError:
@@ -71,6 +74,8 @@ class SiriRemote:
             self.__handle_power(data)
         elif handle == self.__HANDLE_INPUT:
             self.__handle_input(data)
+        elif handle == self.__HANDLE_TOUCH:
+            self.__handle_touchpad(data)
 
     def __handle_battery(self, data):
         self.__listener.event_battery(data[0])
@@ -82,24 +87,15 @@ class SiriRemote:
             self.__listener.event_power(False)
 
     def __handle_input(self, data):
-        button = data[1]
-        if data[0] == 2 and button & self.BUTTON_TOUCHPAD:
-            button += self.BUTTON_TOUCHPAD_2 - self.BUTTON_TOUCHPAD
+        button = int.from_bytes(data, byteorder='little')
 
         if button != self.__lastButton:
             self.__lastButton = button
             self.__listener.event_button(button)
 
-        if len(data) >= 3 and data[2] == self.__TOUCH_EVENT:
-            self.__handle_touchpad(data)
-
     def __handle_touchpad(self, data):
-        pressed = data[1] & self.BUTTON_TOUCHPAD
-        if len(data) == 13:
-            self.__listener.event_touchpad([self.__decode_finger(data[6:13])], pressed)
-        elif len(data) == 20:
-            self.__listener.event_touchpad([self.__decode_finger(data[6:13]),
-                                            self.__decode_finger(data[13:20])], pressed)
+        if len(data) == 11:
+            self.__listener.event_touchpad(self.__decode_finger(data[4:11]))
 
     @staticmethod
     def __decode_finger(data):

@@ -15,11 +15,8 @@ class Callback(RemoteListener):
     def event_button(self, button: int):
         handle_button_event(button)
 
-    def event_touchpad(self, data, pressed: bool):
-        if len(data) == 2 and data[0][2] == 0:  # "ghost" finger with pressure 0
-            handle_touchpad_event(data[1])
-        else:
-            handle_touchpad_event(data[0])
+    def event_touchpad(self, data):
+        handle_touchpad_event(data)
 
 
 prevXY = [None, None]
@@ -46,7 +43,7 @@ def handle_button_event(button):
         hid_input.release()
         return
 
-    if button & SiriRemote.BUTTON_AIRPLAY:
+    if button & SiriRemote.BUTTON_HOME:
         hid_input.add_key(Input.KEY_NEXTSONG)
 
     if button & SiriRemote.BUTTON_VOLUME_UP:
@@ -55,20 +52,35 @@ def handle_button_event(button):
     if button & SiriRemote.BUTTON_VOLUME_DOWN:
         hid_input.add_key(Input.KEY_VOLUMEDOWN)
 
+    if button & SiriRemote.BUTTON_TOUCHPAD:
+        hid_input.add_key(Input.BTN_LEFT)
+
+    if button & SiriRemote.BUTTON_POWER:
+        hid_input.add_key(Input.KEY_SCREENLOCK)
+
+    if button & SiriRemote.BUTTON_SIRI:
+        hid_input.add_key(Input.BTN_RIGHT)
+
+    if button & SiriRemote.BUTTON_BACK:
+        hid_input.add_key(Input.KEY_PREVIOUSSONG)
+
+    if button & SiriRemote.BUTTON_MUTE:
+        hid_input.add_key(Input.KEY_MUTE)
+
     if button & SiriRemote.BUTTON_PLAY_PAUSE:
         hid_input.add_key(Input.KEY_PLAYPAUSE)
 
-    # if button & SiriRemote.BUTTON_SIRI:
-    #     print("Siri")
+    if button & SiriRemote.BUTTON_UP:
+        hid_input.add_key(Input.KEY_UP)
 
-    if button & SiriRemote.BUTTON_MENU:
-        hid_input.add_key(Input.KEY_PREVIOUSSONG)
+    if button & SiriRemote.BUTTON_DOWN:
+        hid_input.add_key(Input.KEY_DOWN)
 
-    if button & SiriRemote.BUTTON_TOUCHPAD_2:
-        hid_input.add_key(Input.BTN_RIGHT)
+    if button & SiriRemote.BUTTON_LEFT:
+        hid_input.add_key(Input.KEY_LEFT)
 
-    if button & SiriRemote.BUTTON_TOUCHPAD:
-        hid_input.add_key(Input.BTN_LEFT)
+    if button & SiriRemote.BUTTON_RIGHT:
+        hid_input.add_key(Input.KEY_RIGHT)
 
     hid_input.press()
 

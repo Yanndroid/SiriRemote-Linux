@@ -13,8 +13,8 @@ class Callback(RemoteListener):
     def event_button(self, button: int):
         print("Button", button)
 
-    def event_touchpad(self, data, pressed: bool):
-        print("Touch", data, pressed)
+    def event_touchpad(self, data):
+        print("Touch", data)
 
 
 if __name__ == '__main__':
