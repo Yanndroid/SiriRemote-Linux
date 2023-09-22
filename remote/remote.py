@@ -58,8 +58,8 @@ class SiriRemote:
             self.__device.enable_notifications(0x002f)  # battery service
             self.__device.enable_notifications(0x0032)  # power service
             self.__device.enable_notifications(0x003a)  # hid service | buttons
-            self.__device.enable_notifications(0x0036)  # hid service | touch
-            # self.__device.enable_notifications(0x003e)  # hid service | audio
+            self.__device.enable_notifications(0x003e)  # hid service | touch
+            # self.__device.enable_notifications(0x0036)  # hid service | audio
             self.__device.write_characteristic(0x004d, b'\xF0\x00')  # "magic" byte
             self.__device.loop()
         except BTLEDisconnectError:
