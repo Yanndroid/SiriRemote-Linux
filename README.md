@@ -1,11 +1,17 @@
 # SiriRemote-Linux
 
-This project allows the usage of an Apple TV 4th Siri Remote with Linux.
+This project allows the usage of an Apple TV Siri Remote with Linux.
 
 Do you have an old remote lying around and would like to control your linux machine with it? Then this is for you. This
 python program connects to and intercepts the data from a SiriRemote over bluetooth and does something useful with it,
 like change the volume or control media. Even the touchpad is working and if you know a bit of python, you can basically
 do anything with it.
+
+Suppoerted models ([check which one you have](https://support.apple.com/en-us/HT205329)):
+- 1st gen
+- 2nd gen ([gen-3]((../gen-3)) branch)
+- 3rd gen ([gen-3]((../gen-3)) branch)
+- yours might also work, try it out!
 
 * [SiriRemote-Linux](#siriremote-linux)
     * [Usage](#usage)
@@ -36,8 +42,8 @@ power on
 scan on
 ```
 
-Press `MENU` and `+` for few seconds and the remote will show up in bluetoothctl. The mac address should start
-with `48:A9:1C:`.
+Press `MENU` and `+` for few seconds and the remote will show up in bluetoothctl. The mac address might start
+with `48:A9:1C:` or `60:BE:C4:` (yours may vary, [see here](https://maclookup.app/vendors/apple-inc)).
 
 ```commandline
 pair <mac-address>
