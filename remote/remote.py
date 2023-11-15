@@ -100,6 +100,7 @@ class SiriRemote:
     @staticmethod
     def __decode_finger(data):
         x = int((data[0] + 255 * (data[1] & 7) - 230) / 15)
+        if x < 0: x = x + 150
         y = (data[2] if data[2] & 128 else data[2] + 255) - 188
         p = data[5]
         return x, y, p
