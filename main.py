@@ -17,37 +17,41 @@ class Callback(RemoteListener):
 
     def event_touchpad(self, data, pressed: bool):
         if len(data) == 2 and data[0][2] == 0:  # "ghost" finger with pressure 0
-            handle_touchpad_event(data[1])
+            handle_touchpad_event(data[1], pressed)
         else:
-            handle_touchpad_event(data[0])
+            handle_touchpad_event(data[0], pressed)
 
 
-prevXY = [None, None]
+def handle_touchpad_event(data, pressed: bool):
+    if not pressed:
+        hid_input.release()
+        return
 
+    x = data[0]
+    y = data[1]
 
-def handle_touchpad_event(data):
-    sensi = 8
-    x = data[0] * sensi
-    y = data[1] * - sensi
-    p = data[2]
-
-    if prevXY[0] and prevXY[1]:
-        hid_input.move_cursor(x - prevXY[0], y - prevXY[1])
-
-    if p == 0:
-        prevXY[0] = prevXY[1] = None
+    if abs(y - 54) > abs(x - 54):
+        button = Input.KEY_UP if y > 54 else Input.KEY_DOWN
     else:
-        prevXY[0] = x
-        prevXY[1] = y
+        button = Input.KEY_RIGHT if x > 54 else Input.KEY_LEFT
+
+    if 30 < y < 78 and 30 < x < 78:
+        button = Input.KEY_ENTER
+
+    hid_input.add_key(button)
+    hid_input.press()
 
 
 def handle_button_event(button):
+    if button & SiriRemote.BUTTON_TOUCHPAD_2 or button & SiriRemote.BUTTON_TOUCHPAD:
+        return
+
     if button == SiriRemote.BUTTON_RELEASED:
         hid_input.release()
         return
 
     if button & SiriRemote.BUTTON_AIRPLAY:
-        hid_input.add_key(Input.KEY_NEXTSONG)
+        hid_input.add_key(Input.KEY_BACK)
 
     if button & SiriRemote.BUTTON_VOLUME_UP:
         hid_input.add_key(Input.KEY_VOLUMEUP)
@@ -62,13 +66,7 @@ def handle_button_event(button):
     #     print("Siri")
 
     if button & SiriRemote.BUTTON_MENU:
-        hid_input.add_key(Input.KEY_PREVIOUSSONG)
-
-    if button & SiriRemote.BUTTON_TOUCHPAD_2:
-        hid_input.add_key(Input.BTN_RIGHT)
-
-    if button & SiriRemote.BUTTON_TOUCHPAD:
-        hid_input.add_key(Input.BTN_LEFT)
+        hid_input.add_key(Input.KEY_MENU)
 
     hid_input.press()
 
