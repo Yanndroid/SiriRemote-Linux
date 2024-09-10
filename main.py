@@ -1,6 +1,6 @@
 import sys
 from remote.remote import SiriRemote, RemoteListener
-from hid_input import Input
+from input.hid_input import Input
 
 hid_input = Input()
 
